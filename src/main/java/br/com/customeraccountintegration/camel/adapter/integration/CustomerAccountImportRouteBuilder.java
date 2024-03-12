@@ -1,4 +1,4 @@
-package br.com.customeraccountintegration.camel.adapter.camel.route;
+package br.com.customeraccountintegration.camel.adapter.integration;
 
 import br.com.customeraccountintegration.camel.domain.CustomerService;
 import br.com.customeraccountintegration.camel.domain.enumeration.CustomerStatusEnum;

@@ -1,7 +1,7 @@
 package br.com.customeraccountintegration.camel.configuration;
 
-import br.com.customeraccountintegration.camel.adapter.camel.route.CustomerAccountImportRouteBuilder;
-import br.com.customeraccountintegration.camel.adapter.camel.route.CustomerAccountSyncRouteBuilder;
+import br.com.customeraccountintegration.camel.adapter.integration.CustomerAccountImportRouteBuilder;
+import br.com.customeraccountintegration.camel.adapter.integration.CustomerAccountSyncRouteBuilder;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.impl.DefaultCamelContext;
