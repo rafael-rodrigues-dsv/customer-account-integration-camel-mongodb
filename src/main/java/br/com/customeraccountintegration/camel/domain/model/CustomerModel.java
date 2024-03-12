@@ -29,4 +29,5 @@ public class CustomerModel {
   private String contract;
   private LocalDateTime creationDate;
   private LocalDateTime updateDate;
+  private String errorMessage;
 }

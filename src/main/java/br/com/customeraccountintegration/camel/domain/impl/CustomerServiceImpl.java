@@ -35,9 +35,13 @@ public class CustomerServiceImpl implements CustomerService {
   }
 
   @Override
-  public CustomerModel updateStatus(String id, CustomerStatusEnum customerStatus) {
+  public CustomerModel updateCustomer(String id, CustomerModel customerModel) {
     return customerRepository.findById(id).map(existingCustomer -> {
-      existingCustomer.setCustomerStatus(customerStatus);
+      existingCustomer.setCustomerStatus(customerModel.getCustomerStatus());
+
+      if (!customerModel.getErrorMessage().isEmpty())
+        existingCustomer.setErrorMessage(customerModel.getErrorMessage());
+      
       existingCustomer.setUpdateDate(LocalDateTime.now());
       return customerRepository.save(existingCustomer);
     }).orElseThrow(() -> new EmptyResultDataAccessException("Customer not found with id " + id, 1));

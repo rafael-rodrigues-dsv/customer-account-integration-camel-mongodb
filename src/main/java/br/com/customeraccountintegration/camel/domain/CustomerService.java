@@ -13,7 +13,7 @@ public interface CustomerService {
 
   long countByStatus(CustomerStatusEnum customerStatus);
 
-  CustomerModel updateStatus(String id, CustomerStatusEnum customerStatus);
+  CustomerModel updateCustomer(String id, CustomerModel customerModel);
 
   void addBatch(List<CustomerModel> customers);
 }

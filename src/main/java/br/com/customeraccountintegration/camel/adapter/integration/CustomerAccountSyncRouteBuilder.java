@@ -45,7 +45,7 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
 
             // Adiciona o status code à propriedade do Exchange
             for (CustomerModel customer : processingCustomers) {
-              exchange.setProperty("apiStatusCode", apiHealthService.checkApiHealth(customer));
+              exchange.setProperty("customer", apiHealthService.syncCustomer(customer));
             }
           }
         })
@@ -54,10 +54,8 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
         .split(body())
         .streaming()
         .process(exchange -> {
-          CustomerModel customer = exchange.getIn().getBody(CustomerModel.class);
-          HttpStatus apiStatusCode = exchange.getProperty("apiStatusCode", HttpStatus.class);
-          CustomerStatusEnum newStatus = determineNewStatus(apiStatusCode);
-          customerService.updateStatus(customer.getId(), newStatus);
+          CustomerModel customer = exchange.getProperty("customer", CustomerModel.class);
+          customerService.updateCustomer(customer.getId(), exchange.getProperty("customer", CustomerModel.class));
         })
         .endChoice()
         .otherwise()
