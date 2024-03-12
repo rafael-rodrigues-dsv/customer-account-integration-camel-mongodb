@@ -1,0 +1,20 @@
+# Configurações do MongoDB
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: registration
+
+# Folder to import files
+file:
+  import:
+    input:
+      path: "C:/Users/rrsantos/OneDrive - NTT DATA EMEAL/Documents/Files/Input"
+    output:
+      path: "C:/Users/rrsantos/OneDrive - NTT DATA EMEAL/Documents/Files/Output"
+
+# Configurações da API
+api:
+  health:
+    url: http://localhost:8080/api/health

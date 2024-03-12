@@ -1,0 +1,5 @@
+1. No prompt de comando, navegue até o diretório onde os arquivos binários do MongoDB estão localizados:
+cd C:\Tools\mongodb-windows-x86_64-7.0.6\mongodb-win32-x86_64-windows-7.0.6\bin
+
+2. Em seguida, execute o seguinte comando para iniciar o servidor MongoDB:
+mongod --dbpath C:\Tools\data\MongoDb
