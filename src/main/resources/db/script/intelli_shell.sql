@@ -11,6 +11,11 @@ db.customer.aggregate([
     { $group: { _id: null, count: { $sum: 1 } } }
 ]).toArray();
 
+db.customer.aggregate([
+    { $match: { "customerStatus": "SUCCESSFUL_PROCESSING" } },
+    { $group: { _id: null, count: { $sum: 1 } } }
+]).toArray();
+
 --===============================================
 -- DELETE FROM registration.customer c
 -- WHERE c.customer_id IN (
