@@ -22,28 +22,11 @@ import java.util.UUID;
 public class CustomerModel {
 
   @Id
-  private String id = UUID.randomUUID().toString();  // Gerando automaticamente um GUID
-
+  private String id = UUID.randomUUID().toString();
   private String documentNumber;
   private CustomerStatusEnum customerStatus;
   private String email;
   private String contract;
-
-  @Transient
-  private boolean isNew = true;
-
-  @Transient
   private LocalDateTime creationDate;
-
-  @Transient
   private LocalDateTime updateDate;
-
-  public void configureBeforeSave() {
-    this.creationDate = LocalDateTime.now();
-    this.updateDate = this.creationDate;
-  }
-
-  public void configureBeforeUpdate() {
-    this.updateDate = LocalDateTime.now();
-  }
 }

@@ -1,5 +1,6 @@
 package br.com.customeraccountintegration.camel.adapter.integration;
 
+import br.com.customeraccountintegration.camel.adapter.api.CustomerApiHealthService;
 import br.com.customeraccountintegration.camel.domain.CustomerService;
 import br.com.customeraccountintegration.camel.domain.enumeration.CustomerStatusEnum;
 import br.com.customeraccountintegration.camel.domain.model.CustomerModel;
@@ -9,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -24,10 +23,7 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
   private CustomerService customerService;
 
   @Autowired
-  private RestTemplate restTemplate;
-
-  @Value("${api.health.url}")
-  private String apiUrl;
+  private CustomerApiHealthService apiHealthService;
 
   @Override
   public void configure() throws Exception {
@@ -48,10 +44,12 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
 
             long endTime = System.currentTimeMillis();
             long elapsedTime = endTime - startTime;
-            logger.info("Tempo de processamento: {} milissegundos", elapsedTime);
+            logger.info("Tempo de processamento: {} milissegundos");
 
             // Adiciona o status code à propriedade do Exchange
-            exchange.setProperty("apiStatusCode", callApi(apiUrl));
+            for (CustomerModel customer : processingCustomers) {
+              exchange.setProperty("apiStatusCode", apiHealthService.checkApiHealth(customer));
+            }
           }
         })
         .choice()
@@ -68,16 +66,6 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
         .otherwise()
         .log("Lista de clientes vazia ou nula. Nenhuma atualização de status será realizada.")
         .end();
-  }
-
-  private HttpStatus callApi(String apiUrl) {
-    try {
-      ResponseEntity<Void> responseEntity = restTemplate.getForEntity(apiUrl, Void.class);
-      return (HttpStatus) responseEntity.getStatusCode();
-    } catch (Exception e) {
-      logger.error("Erro ao chamar a API: {}", e.getMessage(), e);
-      return HttpStatus.INTERNAL_SERVER_ERROR;
-    }
   }
 
   private CustomerStatusEnum determineNewStatus(HttpStatus apiStatusCode) {

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,14 +38,16 @@ public class CustomerServiceImpl implements CustomerService {
   public CustomerModel updateStatus(String id, CustomerStatusEnum customerStatus) {
     return customerRepository.findById(id).map(existingCustomer -> {
       existingCustomer.setCustomerStatus(customerStatus);
-      existingCustomer.configureBeforeUpdate(); // Configuração antes da atualização
+      existingCustomer.setUpdateDate(LocalDateTime.now());
       return customerRepository.save(existingCustomer);
     }).orElseThrow(() -> new EmptyResultDataAccessException("Customer not found with id " + id, 1));
   }
 
   @Override
   public void addBatch(List<CustomerModel> customers) {
-    customers.forEach(CustomerModel::configureBeforeSave); // Configuração antes de salvar
+    customers.forEach(customer -> {
+      customer.setCreationDate(LocalDateTime.now());
+    });
     customerRepository.saveAll(customers);
   }
 }
