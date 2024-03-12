@@ -49,9 +49,6 @@ public class CustomerServiceImpl implements CustomerService {
 
   @Override
   public void addBatch(List<CustomerModel> customers) {
-    customers.forEach(customer -> {
-      customer.setCreationDate(LocalDateTime.now());
-    });
     customerRepository.saveAll(customers);
   }
 }

@@ -27,7 +27,7 @@ public class CustomerModel {
   private CustomerStatusEnum customerStatus;
   private String email;
   private String contract;
-  private LocalDateTime creationDate;
+  private LocalDateTime creationDate = LocalDateTime.now();
   private LocalDateTime updateDate;
   private String errorMessage;
 }
