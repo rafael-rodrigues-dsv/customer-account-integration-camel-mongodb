@@ -4,26 +4,23 @@ import br.com.customeraccountintegration.camel.adapter.api.CustomerApiHealthServ
 import br.com.customeraccountintegration.camel.domain.CustomerService;
 import br.com.customeraccountintegration.camel.domain.enumeration.CustomerStatusEnum;
 import br.com.customeraccountintegration.camel.domain.model.CustomerModel;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomerAccountSyncRouteBuilder.class);
-
-  @Autowired
-  private CustomerService customerService;
-
-  @Autowired
-  private CustomerApiHealthService apiHealthService;
+  private final CustomerService customerService;
+  private final CustomerApiHealthService apiHealthService;
 
   @Override
   public void configure() throws Exception {

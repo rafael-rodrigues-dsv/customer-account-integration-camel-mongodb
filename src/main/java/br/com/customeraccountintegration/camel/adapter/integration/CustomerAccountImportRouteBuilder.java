@@ -3,6 +3,7 @@ package br.com.customeraccountintegration.camel.adapter.integration;
 import br.com.customeraccountintegration.camel.domain.CustomerService;
 import br.com.customeraccountintegration.camel.domain.enumeration.CustomerStatusEnum;
 import br.com.customeraccountintegration.camel.domain.model.CustomerModel;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerAccountImportRouteBuilder extends RouteBuilder {
-  private static final Logger logger = LoggerFactory.getLogger(CustomerAccountImportRouteBuilder.class);
 
-  @Autowired
-  private CustomerService customerService;
+  private static final Logger logger = LoggerFactory.getLogger(CustomerAccountImportRouteBuilder.class);
+  private final CustomerService customerService;
 
   @Value("${file.import.input.path}")
   private String fileInputPath;
