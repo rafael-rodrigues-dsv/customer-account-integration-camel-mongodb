@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -32,10 +33,13 @@ public class CustomerApiHealthServiceImpl implements CustomerApiHealthService {
         customerModel.setCustomerStatus(CustomerStatusEnum.SUCCESSFUL_PROCESSING);
       } else {
         customerModel.setCustomerStatus(CustomerStatusEnum.PROCESSING_FAILURE);
-        customerModel.setErrorMessage("Erro ao processar a requisição: " + statusCode.name() + ", " + responseEntity.getBody());
+        customerModel.setErrorMessage(statusCode.value() + " - " + responseEntity.getBody());
       }
+    } catch (HttpStatusCodeException e) {
+      customerModel.setCustomerStatus(CustomerStatusEnum.PROCESSING_FAILURE);
+      customerModel.setErrorMessage(e.getStatusCode().value() + " - " + e.getResponseBodyAsString());
     } catch (Exception e) {
-      logger.error("Erro ao verificar a saúde da API: {}", e.getMessage(), e);
+      logger.error("Erro ao enviar a requisição para a API: {}", e.getMessage(), e);
       customerModel.setCustomerStatus(CustomerStatusEnum.PROCESSING_FAILURE);
       customerModel.setErrorMessage("Erro ao processar a requisição: " + e.getMessage());
     }
