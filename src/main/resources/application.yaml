@@ -10,9 +10,9 @@ spring:
 file:
   import:
     input:
-      path: "C:/Users/rrsantos/OneDrive - NTT DATA EMEAL/Documents/Files/Input"
+      path: "C:/Files/Input"
     output:
-      path: "C:/Users/rrsantos/OneDrive - NTT DATA EMEAL/Documents/Files/Output"
+      path: "C:/Files/Output"
 
 # Configurações da API
 api:
