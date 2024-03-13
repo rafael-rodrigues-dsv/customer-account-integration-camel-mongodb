@@ -19,6 +19,7 @@ import java.util.List;
 public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomerAccountSyncRouteBuilder.class);
+
   private final CustomerService customerService;
   private final CustomerApiHealthService apiHealthService;
 
@@ -37,16 +38,18 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
             logger.info("Início da montagem da lista de clientes para processar.");
             List<CustomerModel> processingCustomers = customerService.findByStatus(statusToProcessing);
             exchange.getIn().setBody(processingCustomers);
+
+            // Adiciona o customer atualizado a lista de atualização no banco
+            for (CustomerModel customer : processingCustomers) {
+              exchange.setProperty("customer", apiHealthService.syncCustomer(customer));
+            }
             logger.info("Fim da montagem da lista de clientes para processar. Total de clientes: {}", processingCustomers.size());
 
             long endTime = System.currentTimeMillis();
             long elapsedTime = endTime - startTime;
             logger.info("Tempo de processamento: {} milissegundos");
 
-            // Adiciona o status code à propriedade do Exchange
-            for (CustomerModel customer : processingCustomers) {
-              exchange.setProperty("customer", apiHealthService.syncCustomer(customer));
-            }
+
           }
         })
         .choice()
@@ -54,8 +57,8 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
         .split(body())
         .streaming()
         .process(exchange -> {
-          CustomerModel customer = exchange.getProperty("customer", CustomerModel.class);
-          customerService.updateCustomer(customer.getId(), exchange.getProperty("customer", CustomerModel.class));
+          CustomerModel customer = exchange.getIn().getBody(CustomerModel.class);
+          customerService.updateCustomer(customer.getId(), customer);
         })
         .endChoice()
         .otherwise()

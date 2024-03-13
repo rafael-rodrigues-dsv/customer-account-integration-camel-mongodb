@@ -45,5 +45,5 @@ var customerIdsToUpdate = customersToUpdate.map(function(customer) {
 
 db.customer.updateMany(
     { "_id": { $in: customerIdsToUpdate } },
-    { $set: { "customerStatus": "PROCESSING", "errorMessage": null } }
+    { $set: { "customerStatus": "PROCESSING" }, $unset: { "errorMessage": "" } }
 );
