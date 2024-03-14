@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
@@ -29,38 +27,24 @@ public class CustomerAccountSyncRouteBuilder extends RouteBuilder {
             .to("direct:updateCustomerStatus");
 
         from("direct:updateCustomerStatus")
-          .process(exchange -> {
-              CustomerStatusEnum statusToProcessing = CustomerStatusEnum.PROCESSING;
-              long startTime = System.currentTimeMillis();
-              long numberOfCustomers = customerService.countByStatus(statusToProcessing);
+            .process(exchange -> {
+                CustomerStatusEnum statusToProcessing = CustomerStatusEnum.PROCESSING;
+                long numberOfCustomers = customerService.countByStatus(statusToProcessing);
 
-              if (numberOfCustomers > 0) {
-                logger.info("Início da montagem da lista de clientes para processar.");
-                List<CustomerModel> processingCustomers = customerService.findByStatus(statusToProcessing);
-                exchange.getIn().setBody(processingCustomers);
+                if (numberOfCustomers > 0) {
+                    long startTime = System.currentTimeMillis();
+                    logger.info("Iniciando integração com a API para processar clientes.");
 
-                // Adiciona o customer atualizado a lista de atualização no banco
-                for (CustomerModel customer : processingCustomers) {
-                    exchange.setProperty("customer", apiHealthService.syncCustomer(customer));
+                    customerService.findByStatus(statusToProcessing)
+                        .forEach(customer -> {
+                            apiHealthService.syncCustomer(customer);
+                            customerService.updateCustomer(customer.getId(), customer);
+                        });
+
+                    long endTime = System.currentTimeMillis();
+                    long elapsedTime = endTime - startTime;
+                    logger.info("Concluída integração com a API para processar clientes. Tempo de processamento: {} milissegundos", elapsedTime);
                 }
-                logger.info("Fim da montagem da lista de clientes para processar. Total de clientes: {}", processingCustomers.size());
-
-                long endTime = System.currentTimeMillis();
-                long elapsedTime = endTime - startTime;
-                logger.info("Tempo de processamento: {} milissegundos");
-              }
-          })
-          .choice()
-            .when(body().isNotNull())  // Verifica se a lista não é nula
-              .split(body())
-              .streaming()
-              .process(exchange -> {
-                  CustomerModel customer = exchange.getIn().getBody(CustomerModel.class);
-                  customerService.updateCustomer(customer.getId(), customer);
-              })
-            .endChoice()
-            .otherwise()
-              .log("Lista de clientes vazia ou nula. Nenhuma atualização de status será realizada.")
-            .end();
+            });
     }
 }
