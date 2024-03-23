@@ -10,9 +10,9 @@ spring:
 file:
   import:
     input:
-      path: "C:/Files/Input"
+      path: "C:/Files/customer-account-import/input"
     output:
-      path: "C:/Files/Output"
+      path: "C:/Files/customer-account-import/output"
 
 # Configurações da API
 api:
