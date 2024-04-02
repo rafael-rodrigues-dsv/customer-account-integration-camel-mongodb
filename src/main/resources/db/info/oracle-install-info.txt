@@ -1,0 +1,3 @@
+1. Acesso o site e baixe os binários do Oracle Express Edition https://www.oracle.com/database/technologies/xe-downloads.html
+
+2. Descompacte os arquivos em C:\Tools\OracleXE213_Win64
