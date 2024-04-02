@@ -1,0 +1,24 @@
+1. Inicie o cluster de Banco de Dados
+C:\Tools\postgresql-16.2-1-windows-x64-binaries\pgsql\bin\pg_ctl.exe initdb -D "C:\Tools\data\PostgreSQL"
+
+2. Inicia o servidor de banco de dados
+C:\Tools\postgresql-16.2-1-windows-x64-binaries\pgsql\bin\pg_ctl.exe start -D "C:\Tools\data\PostgreSQL" -U postgres
+
+3. Verificando se o banco está em execução:
+C:\Tools\postgresql-16.2-1-windows-x64-binaries\pgsql\bin\pg_ctl.exe status -D "C:\Tools\data\PostgreSQL"
+
+4. Navegue até o diretório bin do PostgreSQL usando o comando (ou substitua pelo caminho correto em seu sistema):
+cd C:\Tools\postgresql-16.2-1-windows-x64-binaries\pgsql\bin
+
+5. Conecte-se ao banco de dados usando o utilitário psql:
+.\psql.exe -U rrsantos -d postgres
+
+6. No prompt do psql, crie o usuário "postgres" com privilégios de superusuário. Execute o seguinte comando:
+
+CREATE USER postgres WITH SUPERUSER PASSWORD 'postgres';
+
+7. Saia do psql digitando \q ou pressionando Ctrl + D.
+
+8. Agora, tente conectar-se ao PostgreSQL usando o DBeaver, utilizando o usuário "postgres" e a senha definida anteriormente.
+
+
